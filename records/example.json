@@ -1,0 +1,9 @@
+{
+  "schema_names": ["Body type", "Price", "Year", "Features"],
+  "schema_types": ["list","math","math","set"],
+  "options": [
+    [1, "Ford Pinto", "Sedan", 5500, 1985, ["Leather seats"]],
+    [2, "Hyundai Sonata", "Sedan", 14000, 2016, ["AC","Heated seats","Cruise Control","AirPlay"]],
+    [3, "Toyota Highlander", "SUV", 36000, 2022, ["AC","Heated seats","Adaptive cruise control"]]
+  ]
+}
