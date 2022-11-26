@@ -10,7 +10,7 @@
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
-  io:format("~p",[deriver:derive_schema_options("example")]),
+  deriver:derive_schema_options("example"),
     softsort_sup:start_link().
 
 stop(_State) ->

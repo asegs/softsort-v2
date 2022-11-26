@@ -10,7 +10,7 @@ derive_schema_option({Schema_Type, Accumulated_Option}) ->
   if
     Schema_Type == list -> unique(Accumulated_Option);
     Schema_Type == set -> unique(lists:flatten(Accumulated_Option, []));
-    true -> {lists:min(Accumulated_Option), lists:max(Accumulated_Option)}
+    true -> [lists:min(Accumulated_Option), lists:max(Accumulated_Option)]
   end.
 
 
@@ -33,9 +33,16 @@ derive_schema_options(Name) ->
   {ok, Options} = maps:find(<<"options">>, Table),
   Accumulated = accumulate_options(lists:map(fun(_) -> [] end, Schema_Types), Options),
   Data = lists:zip(Schema_Types, Accumulated),
-  lists:map(fun derive_schema_option/1, Data).
+  Params = lists:map(fun derive_schema_option/1, Data),
+  Derived = maps:put(<<"parameters">>, Params, Table),
+  io:format("~p",[Derived]),
+  write_schema_file(Name, Derived).
 
 load_schema_file(Name) ->
   {ok, File} = file:read_file("records/"++Name++".json"),
   jsx:decode(File).
+
+write_schema_file(Name, Json) ->
+  Binary = jsx:encode(Json),
+  file:write_file("records/" ++ Name ++ ".json", Binary).
 
