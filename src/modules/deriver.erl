@@ -35,7 +35,6 @@ derive_schema_options(Name) ->
   Data = lists:zip(Schema_Types, Accumulated),
   Params = lists:map(fun derive_schema_option/1, Data),
   Derived = maps:put(<<"parameters">>, Params, Table),
-  io:format("~p",[Derived]),
   write_schema_file(Name, Derived).
 
 load_schema_file(Name) ->
