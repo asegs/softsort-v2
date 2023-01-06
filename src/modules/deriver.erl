@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1]).
+-export([derive_schema_options/1, load_schema_file/1]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).

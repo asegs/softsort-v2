@@ -7,26 +7,26 @@ zip4([W|Ws], [X|Xs], [Y|Ys], [Z|Zs]) ->
   [{W,X,Y,Z}|zip4(Ws, Xs, Ys, Zs)].
 
 score_schema_in_option({Option, {SchemaType, Selection, Weight, MinMax}}) ->
-  if SchemaType == list ->
+  if SchemaType == <<"list">> ->
     Weight * calculate:score_list(Option, Selection) ;
-    SchemaType == math ->
+    SchemaType == <<"math">> ->
       {Lower, Upper, Harshness, Direction} = Selection,
-      {Min, Max} = MinMax,
+      [Min,Max | _] = MinMax,
       Weight * calculate:score_value_range(Option, Lower, Upper, Harshness, Direction, Min, Max) ;
-    SchemaType == set ->
+    SchemaType == <<"set">> ->
       Weight * calculate:score_membership(Option, Selection)
   end.
 
 
-score_option([Id, Name | Option_Data],Meta_List) ->
+score_option([Id, Name | Option_Data],Meta_List, Perfect_Score) ->
   Entries = lists:zip(Option_Data, Meta_List),
   Score = lists:sum(lists:map(fun score_schema_in_option/1, Entries)),
-  {Id, Name, Score}.
+  {Id, Name, Score/Perfect_Score}.
 
 rank(SchemaTypes, Options, Selections, Weights, MinMax) ->
   PerfectScore = lists:sum(Weights),
   PerEach = zip4(SchemaTypes,Selections,Weights,MinMax),
-  lists:map(fun(Option)->score_option(Option, PerEach) / PerfectScore end, Options).
+  lists:map(fun(Option)->score_option(Option, PerEach, PerfectScore) end, Options).
 
 get_top_k_unordered(RankedList, K, Lower, Upper) ->
   Avg = (Lower + Upper) / 2,
