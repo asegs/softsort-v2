@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, load_schema_file/1]).
+-export([derive_schema_options/1, get_schema/1, get_body/1]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -44,4 +44,20 @@ load_schema_file(Name) ->
 write_schema_file(Name, Json) ->
   Binary = jsx:encode(Json),
   file:write_file("records/" ++ Name ++ ".json", Binary).
+
+get_schema(Name) ->
+  Data = load_schema_file(Name),
+  {ok, SchemaTypes} = maps:find(<<"schema_types">>, Data),
+  {ok, Options} = maps:find(<<"options">>, Data),
+  {ok, Parameters} = maps:find(<<"parameters">>, Data),
+  {SchemaTypes, Options, Parameters}.
+
+get_body(Req) ->
+  {ok, Body, _} = cowboy_req:read_body(Req),
+  BodyData = jsx:decode(Body),
+  {ok, Record} = maps:find(<<"record">>, BodyData),
+  {ok, Selections} = maps:find(<<"selections">>, BodyData),
+  {ok, Weights} = maps:find(<<"weights">>, BodyData),
+  {ok, K} = maps:find(<<"k">>, BodyData),
+  {Record, Selections, Weights, K}.
 
