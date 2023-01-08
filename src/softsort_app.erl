@@ -11,7 +11,7 @@
 
 start(_StartType, _StartArgs) ->
   Dispatch = cowboy_router:compile([
-    { <<"localhost">>, [{<<"/">>, api, []}] }
+    { <<"localhost">>, [{<<"/">>, score, []}, {<<"/schema/:schema">>, schema, []}] }
   ]),
   {ok, _} = cowboy:start_clear(
     no_handler,

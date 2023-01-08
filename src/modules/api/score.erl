@@ -1,4 +1,4 @@
--module(api).
+-module(score).
 -behaviour(cowboy_handler).
 -export([init/2]).
 
