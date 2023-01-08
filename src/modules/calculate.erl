@@ -33,7 +33,7 @@ score_value_range(Actual, Lower, Upper, Harshness, Direction, Min, Max) ->
            end,
   if
     Direction == none -> Result ;
-    CloserToUpperEnd == (Direction == high) -> math:pow(Result, 1 / Harshness) ;
+    CloserToUpperEnd == (Direction == 1) -> math:pow(Result, 1 / Harshness) ;
     true -> math:pow(Result, Harshness)
   end.
 
