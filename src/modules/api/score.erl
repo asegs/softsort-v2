@@ -9,7 +9,7 @@ init( Req, State ) ->
   io:format("Served results for ~s\n",[Record]),
   _ = cowboy_req:reply(
     200,
-    #{<<"content-type">> => <<"text/plain">>},
+    #{<<"content-type">> => <<"application/json">>},
     jsx:encode(#{<<"winners">> => lists:map(fun tuple_to_list/1, Winners)}),
     Req
   ),

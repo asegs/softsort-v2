@@ -8,7 +8,7 @@ init( Req, State ) ->
   io:format("Served results for ~s\n",[Schema]),
   _ = cowboy_req:reply(
     200,
-    #{<<"content-type">> => <<"text/plain">>},
+    #{<<"content-type">> => <<"application/json">>},
     jsx:encode(#{<<"types">> => Types, <<"parameters">> => Parameters, <<"names">> => Names}),
     Req
   ),
