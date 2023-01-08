@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, get_schema/1, get_body/1]).
+-export([derive_schema_options/1, get_schema/1, get_body/1, load_schema_file/1]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -50,7 +50,8 @@ get_schema(Name) ->
   {ok, SchemaTypes} = maps:find(<<"schema_types">>, Data),
   {ok, Options} = maps:find(<<"options">>, Data),
   {ok, Parameters} = maps:find(<<"parameters">>, Data),
-  {SchemaTypes, Options, Parameters}.
+  {ok, Names} = maps:find(<<"schema_names">>, Data),
+  {SchemaTypes, Options, Parameters, Names}.
 
 get_body(Req) ->
   {ok, Body, _} = cowboy_req:read_body(Req),
