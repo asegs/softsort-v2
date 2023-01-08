@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, get_schema/1, get_body/1, load_schema_file/1]).
+-export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -41,9 +41,11 @@ load_schema_file(Name) ->
   {ok, File} = file:read_file("records/"++Name++".json"),
   jsx:decode(File).
 
-write_schema_file(Name, Json) ->
-  Binary = jsx:encode(Json),
+write_by_name(Binary, Name) ->
   file:write_file("records/" ++ Name ++ ".json", Binary).
+
+write_schema_file(Name, Json) ->
+  write_by_name(jsx:encode(Json), Name).
 
 get_schema(Name) ->
   Data = load_schema_file(Name),

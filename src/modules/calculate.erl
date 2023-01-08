@@ -6,11 +6,14 @@ boolean_to_integer(true) ->
 boolean_to_integer(false) ->
   0.
 
-
+score_list(_, []) ->
+  1;
 score_list(Value, Options) ->
   boolean_to_integer(lists:member(Value, Options)).
 
 score_membership([], _) ->
+  1;
+score_membership(_,[]) ->
   1;
 score_membership(Desired, Options) ->
   Union = sets:intersection(sets:from_list(Desired), sets:from_list(Options)),

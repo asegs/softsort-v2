@@ -1,0 +1,1 @@
+{"options":[[1,"AK-47","Rifle","7.62x39",700]],"parameters":[["Rifle"],["7.62x39"],[700,700]],"schema_names":["Category","Caliber","Price"],"schema_types":["list","list","math"]}
