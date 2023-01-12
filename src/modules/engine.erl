@@ -20,8 +20,10 @@ score_schema_in_option({Option, {SchemaType, Selection, Weight, MinMax}}) ->
 
 score_option([Id, Name | Option_Data],Meta_List, Perfect_Score) ->
   Entries = lists:zip(Option_Data, Meta_List),
-  Score = lists:sum(lists:map(fun score_schema_in_option/1, Entries)),
-  {Id, Name, Score/Perfect_Score}.
+  Scores = lists:map(fun score_schema_in_option/1, Entries),
+  Score = lists:sum(Scores),
+  Meta = lists:map(fun tuple_to_list/1, lists:zip(Option_Data, Scores)),
+  {Id, Name, Score/Perfect_Score, Meta}.
 
 rank(SchemaTypes, Options, Selections, Weights, MinMax) ->
   PerfectScore = lists:sum(Weights),
