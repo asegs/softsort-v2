@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2, get_missing_keys/1]).
+-export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2, get_missing_keys/1, get_mismatched_types/3]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -59,6 +59,26 @@ get_missing_keys(BodyData) ->
   Required = sets:from_list([<<"selections">>,<<"weights">>,<<"k">>]),
   Found = sets:from_list(maps:keys(BodyData)),
   sets:to_list(sets:subtract(Required, Found)).
+
+is_list_schema(List) ->
+  is_list(List) andalso lists:all(fun is_binary/1, List).
+
+is_math_schema(List) ->
+  is_list(List) andalso (length(List) == 4) andalso lists:all(fun is_number/1, List).
+
+is_set_schema(List) ->
+  is_list(List) andalso lists:all(fun is_binary/1, List).
+
+get_mismatch_data({Type, Entered, Name}) ->
+  case Type of
+    <<"list">> -> [is_list_schema(Entered), <<"List types require a list of strings.">>, Name];
+    <<"math">> -> [is_math_schema(Entered), <<"Math types require a list of 4 numbers.">>, Name];
+    <<"set">> -> [is_set_schema(Entered), <<"Set types require a list of strings.">>, Name]
+  end.
+
+get_mismatched_types(Types, ProvidedData, Names) ->
+  Meta = lists:zip3(Types, ProvidedData, Names),
+  lists:map(fun ([_ | Data]) -> Data end, lists:filter(fun (Data) -> not lists:nth(1, Data) end, lists:map(fun get_mismatch_data/1, Meta))).
 
 get_body(BodyData) ->
   {ok, Selections} = maps:find(<<"selections">>, BodyData),
