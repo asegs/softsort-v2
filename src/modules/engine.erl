@@ -14,7 +14,7 @@ score_schema_in_option({Option, {SchemaType, Selection, Weight, MinMax}}) ->
       [Min,Max | _] = MinMax,
       Weight * calculate:score_value_range(Option, Lower, Upper, Harshness, Direction, Min, Max) ;
     SchemaType == <<"set">> ->
-      Weight * calculate:score_membership(Option, Selection)
+      Weight * calculate:score_membership(Selection, Option)
   end.
 
 
