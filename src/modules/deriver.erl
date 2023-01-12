@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2]).
+-export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2, get_missing_keys/1]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -55,12 +55,14 @@ get_schema(Name) ->
   {ok, Names} = maps:find(<<"schema_names">>, Data),
   {SchemaTypes, Options, Parameters, Names}.
 
-get_body(Req) ->
-  {ok, Body, _} = cowboy_req:read_body(Req),
-  BodyData = jsx:decode(Body),
-  {ok, Record} = maps:find(<<"record">>, BodyData),
+get_missing_keys(BodyData) ->
+  Required = sets:from_list([<<"selections">>,<<"weights">>,<<"k">>]),
+  Found = sets:from_list(maps:keys(BodyData)),
+  sets:to_list(sets:subtract(Required, Found)).
+
+get_body(BodyData) ->
   {ok, Selections} = maps:find(<<"selections">>, BodyData),
   {ok, Weights} = maps:find(<<"weights">>, BodyData),
   {ok, K} = maps:find(<<"k">>, BodyData),
-  {Record, Selections, Weights, K}.
+  {Selections, Weights, K}.
 
