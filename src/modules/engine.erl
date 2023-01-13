@@ -30,17 +30,18 @@ rank(SchemaTypes, Options, Selections, Weights, MinMax) ->
   PerEach = zip4(SchemaTypes,Selections,Weights,MinMax),
   lists:map(fun(Option)->score_option(Option, PerEach, PerfectScore) end, Options).
 
-get_top_k_unordered(RankedList, K, Lower, Upper) ->
+get_top_k_unordered(RankedList, K, Lower, Upper, CyclesLeft) ->
   Avg = (Lower + Upper) / 2,
-  Remaining = [X || X <- RankedList, element(3, X) > Avg],
+  Remaining = [X || X <- RankedList, element(3, X) >= Avg],
   if
-    length(Remaining) < K-> get_top_k_unordered(RankedList, K, Lower, Avg);
+    length(Remaining) < K-> get_top_k_unordered(RankedList, K, Lower, Avg, CyclesLeft);
     length(Remaining) =< K * 2 -> Remaining;
-    true -> get_top_k_unordered(RankedList, K, Avg, Upper)
+    CyclesLeft == 0 -> Remaining;
+    true -> get_top_k_unordered(RankedList, K, Avg, Upper, CyclesLeft - 1)
   end.
 
 get_top_k_by_qs(RankedList, K) ->
-  Unordered = get_top_k_unordered(RankedList, K, 0, 1),
+  Unordered = get_top_k_unordered(RankedList, K, 0, 1, 20),
   Ordered =  lists:keysort(3, Unordered),
   lists:reverse(lists:sublist(Ordered, (length(Ordered) - K) + 1, length(Ordered))).
 

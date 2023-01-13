@@ -2,12 +2,25 @@
 -behaviour(cowboy_handler).
 -export([init/2]).
 
-init( Req, State ) ->
+init(Req=#{method := <<"POST">>}, State) ->
+  {Code, Message} = scorer(Req),
+  Req2 = cowboy_req:reply(
+    Code,
+    #{<<"content-type">> => <<"application/json">>},
+    Message,
+    Req
+  ),
+  {ok, Req2, State};
+
+init(Req, State) ->
+  {ok, Req, State}.
+
+scorer(Req) ->
   {ok, Schema} = maps:find(schema,cowboy_req:bindings(Req)),
   {ok, Body, _} = cowboy_req:read_body(Req),
   BodyData = jsx:decode(Body),
   Missing = deriver:get_missing_keys(BodyData),
-  {Code, Message} = if
+  if
     length(Missing) > 0 -> {400, jsx:encode(#{<<"error">> => <<"missing_keys">>,<<"details">> => Missing})};
     true ->
       {Selections, Weights, K} = deriver:get_body(BodyData),
@@ -25,13 +38,4 @@ init( Req, State ) ->
           io:format("Served results for ~s\n",[Schema]),
           {200, jsx:encode(#{<<"winners">> => lists:map(fun tuple_to_list/1, Winners)})}
       end
-  end,
-  Req1 = cowboy_req:set_resp_header(<<"access-control-allow-methods">>, <<"GET, OPTIONS">>, Req),
-  Req2 = cowboy_req:set_resp_header(<<"access-control-allow-origin">>, <<"*">>, Req1),
-  Req3 = cowboy_req:reply(
-    Code,
-    #{<<"content-type">> => <<"application/json">>},
-    Message,
-    Req2
-  ),
-  {ok, Req3, State}.
+  end.

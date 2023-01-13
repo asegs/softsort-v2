@@ -21,9 +21,12 @@ start(_StartType, _StartArgs) ->
     }
   ]),
   {ok, _} = cowboy:start_clear(
-    no_handler,
+    cowboy_handler,
     [{port, 8081}],
-    #{env => #{dispatch => Dispatch}}
+    #{
+        env => #{dispatch => Dispatch},
+        middlewares => [cors_middleware, cowboy_router, cowboy_handler]
+      }
   ),
   softsort_sup:start_link().
 
