@@ -74,6 +74,8 @@ document.getElementById("set_category").onclick =(_) => {
         .then(r => r.json())
         .then(j => {
             document.getElementById("selectors").innerHTML = "";
+            document.getElementById("results").innerHTML = "";
+            document.getElementById("results").innerText = "";
             const zipped = zip([j["names"], j["parameters"], j["types"]]);
             zipped.forEach(element => {
                 const name = element[0];
