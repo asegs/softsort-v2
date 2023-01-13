@@ -12,9 +12,12 @@ const zip = (lists) => {
     return result;
 }
 
+const getWeights = (names) => names.map(n => Number(document.getElementById(n + "_weight").value));
+
 const addResults = (results, names) => {
     const r = document.getElementById("results");
     r.innerHTML = "";
+    const weights = getWeights(names);
     for (const result of results) {
         const name = result[1];
         const score = result[2];
@@ -22,7 +25,7 @@ const addResults = (results, names) => {
         const row = document.createElement("div");
         row.append("Name: " + name);
         row.append(document.createElement("br"))
-        row.append(asPercent(score) + " match");
+        row.append(asPercent(score, 1) + " match");
         row.append(document.createElement("br"))
         row.append("----")
         row.append(document.createElement("br"))
@@ -31,7 +34,7 @@ const addResults = (results, names) => {
             const n = names[i];
             row.append(n + ": ")
             row.append(option[0].toString())
-            row.append(", " + asPercent(option[1]) + " match")
+            row.append(", " + asPercent(option[1], weights[i]) + " match")
             row.append(document.createElement("br"))
         }
         row.append(document.createElement("hr"))
@@ -39,9 +42,9 @@ const addResults = (results, names) => {
     }
 }
 
-const asPercent = (numString) => {
+const asPercent = (numString, weight) => {
     const float = Number(numString);
-    const multiplied = float * 100;
+    const multiplied = (float * 100) / weight;
     const rounded = multiplied.toFixed(2);
     return rounded.toString().replace(/\.0+$/, '') + "%";
 }
@@ -85,7 +88,7 @@ document.getElementById("set_category").onclick =(_) => {
                         selectorM.append(document.createElement("br"))
                         createNumberSlider(meta[0], meta[1], name + "_high", meta[1], "Upper bound", selectorM,1);
                         selectorM.append(document.createElement("br"));
-                        createNumberSlider(0, 10, name + "_weight", 1, "Weight", selectorM, 0.1);
+                        createNumberSlider(0.1, 10, name + "_weight", 1, "Weight", selectorM, 0.1);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
                         break;
@@ -107,7 +110,7 @@ document.getElementById("set_category").onclick =(_) => {
                             fieldset.append(label);
                         }
                         selector.append(fieldset);
-                        createNumberSlider(0, 10, name + "_weight", 1, "Weight", selector,0.1);
+                        createNumberSlider(0.1, 10, name + "_weight", 1, "Weight", selector,0.1);
                         selector.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selector);
                         break;
