@@ -113,13 +113,20 @@ document.getElementById("set_category").onclick =(_) => {
                         break;
                 }
             });
+            const n = document.createElement("input");
+            n.type = "number"
+            n.min = 0
+            n.max = 1000
+            n.id = "count"
+            n.value = 10
+            document.getElementById("selectors").append(n);
             const button = document.createElement("button");
             button.innerText = "Submit";
             button.onclick = (_) => {
                 const data = {
                     "selections": [],
                     "weights": [],
-                    "k": 10
+                    "k": parseInt(document.getElementById("count").value)
                 };
                 zipped.forEach(item => {
                     const name = item[0];
