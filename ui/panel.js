@@ -17,6 +17,7 @@ const getWeights = (names) => names.map(n => Number(document.getElementById(n + 
 const addResults = (results, names) => {
     const r = document.getElementById("results");
     r.innerHTML = "";
+    r.append(document.createElement("hr"))
     const weights = getWeights(names);
     for (const result of results) {
         const name = result[1];
@@ -95,7 +96,6 @@ document.getElementById("set_category").onclick =(_) => {
                         document.getElementById("selectors").append(selectorM);
                         break;
                     default:
-                        //Create div...
                         const selector = document.createElement("div");
                         selector.append(name)
                         const fieldset = document.createElement("fieldset");
