@@ -12,7 +12,7 @@ const zip = (lists) => {
     return result;
 }
 
-const addResults = (results) => {
+const addResults = (results, names) => {
     const r = document.getElementById("results");
     r.innerHTML = "";
     for (const result of results) {
@@ -20,14 +20,18 @@ const addResults = (results) => {
         const score = result[2];
         const options = result[3];
         const row = document.createElement("div");
-        row.append(name);
+        row.append("Name: " + name);
         row.append(document.createElement("br"))
         row.append(asPercent(score) + " match");
         row.append(document.createElement("br"))
-        for (const option of options) {
+        row.append("----")
+        row.append(document.createElement("br"))
+        for (let i = 0 ; i < options.length ; i ++) {
+            const option = options[i];
+            const n = names[i];
+            row.append(n + ": ")
             row.append(option[0].toString())
-            row.append(document.createElement("br"))
-            row.append(asPercent(option[1]) + " match")
+            row.append(", " + asPercent(option[1]) + " match")
             row.append(document.createElement("br"))
         }
         row.append(document.createElement("hr"))
@@ -39,7 +43,7 @@ const asPercent = (numString) => {
     const float = Number(numString);
     const multiplied = float * 100;
     const rounded = multiplied.toFixed(2);
-    return rounded.toString() + "%";
+    return rounded.toString().replace(/\.0+$/, '') + "%";
 }
 
 const createNumberSlider = (min, max, idFor, val, title, addTo, step) => {
@@ -78,9 +82,10 @@ document.getElementById("set_category").onclick =(_) => {
                         selectorM.append(name);
                         selectorM.append(document.createElement("br"))
                         createNumberSlider(meta[0],meta[1], name + "_low", meta[0], "Lower bound", selectorM,1);
+                        selectorM.append(document.createElement("br"))
                         createNumberSlider(meta[0], meta[1], name + "_high", meta[1], "Upper bound", selectorM,1);
                         selectorM.append(document.createElement("br"));
-                        createNumberSlider(0, 10, name + "_weight", 1, "Weight:", selectorM, 0.1);
+                        createNumberSlider(0, 10, name + "_weight", 1, "Weight", selectorM, 0.1);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
                         break;
@@ -102,7 +107,7 @@ document.getElementById("set_category").onclick =(_) => {
                             fieldset.append(label);
                         }
                         selector.append(fieldset);
-                        createNumberSlider(0, 10, name + "_weight", 1, "Weight:", selector,0.1);
+                        createNumberSlider(0, 10, name + "_weight", 1, "Weight", selector,0.1);
                         selector.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selector);
                         break;
@@ -147,7 +152,7 @@ document.getElementById("set_category").onclick =(_) => {
                     body: JSON.stringify(data),
                 }).then((response) => response.json())
                     .then((d) => {
-                        addResults(d["winners"])
+                        addResults(d["winners"], d["names"])
                     });
 
             }

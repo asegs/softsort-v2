@@ -36,6 +36,6 @@ scorer(Req) ->
           Winners = engine:top_k_scores(SchemaTypes, Options, Selections, Weights, Parameters, K),
           io:format("Took ~p ms\n",[timer:now_diff(os:timestamp(), Start) / 1000]),
           io:format("Served results for ~s\n",[Schema]),
-          {200, jsx:encode(#{<<"winners">> => lists:map(fun tuple_to_list/1, Winners)})}
+          {200, jsx:encode(#{<<"winners">> => lists:map(fun tuple_to_list/1, Winners), <<"names">> => Names})}
       end
   end.
