@@ -26,10 +26,12 @@ init( Req, State ) ->
           {200, jsx:encode(#{<<"winners">> => lists:map(fun tuple_to_list/1, Winners)})}
       end
   end,
-  _ = cowboy_req:reply(
+  Req1 = cowboy_req:set_resp_header(<<"access-control-allow-methods">>, <<"GET, OPTIONS">>, Req),
+  Req2 = cowboy_req:set_resp_header(<<"access-control-allow-origin">>, <<"*">>, Req1),
+  Req3 = cowboy_req:reply(
     Code,
     #{<<"content-type">> => <<"application/json">>},
     Message,
-    Req
+    Req2
   ),
-  {ok, Req, State}.
+  {ok, Req3, State}.

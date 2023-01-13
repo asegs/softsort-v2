@@ -8,10 +8,12 @@ init( Req, State ) ->
   SchemaString = binary_to_list(Schema),
   deriver:write_by_name(Body, SchemaString),
   deriver:derive_schema_options(SchemaString),
-  _ = cowboy_req:reply(
+  Req1 = cowboy_req:set_resp_header(<<"access-control-allow-methods">>, <<"GET, OPTIONS">>, Req),
+  Req2 = cowboy_req:set_resp_header(<<"access-control-allow-origin">>, <<"*">>, Req1),
+  Req3 = cowboy_req:reply(
     200,
     #{<<"content-type">> => <<"application/json">>},
     <<"">>,
-    Req
+    Req2
   ),
-  {ok, Req, State}.
+  {ok, Req3, State}.

@@ -10,10 +10,12 @@ init( Req, State ) ->
   deriver:write_by_name(jsx:encode(Data), binary_to_list(Schema)),
   deriver:derive_schema_options(binary_to_list(Schema)),
   io:format("Generated samples for ~s\n",[Schema]),
-  _ = cowboy_req:reply(
+  Req1 = cowboy_req:set_resp_header(<<"access-control-allow-methods">>, <<"GET, OPTIONS">>, Req),
+  Req2 = cowboy_req:set_resp_header(<<"access-control-allow-origin">>, <<"*">>, Req1),
+  Req3 = cowboy_req:reply(
     200,
     #{<<"content-type">> => <<"application/json">>},
     jsx:encode(#{<<"data">> => Data}),
-    Req
+    Req2
   ),
-  {ok, Req, State}.
+  {ok, Req3, State}.
