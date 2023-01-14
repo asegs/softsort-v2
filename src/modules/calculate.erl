@@ -29,7 +29,9 @@ score_value_target(Expected, Actual, Harshness, Spread) ->
 
 score_value_range(Actual, Lower, Upper, _, _, _, _) when Lower =< Actual, Actual =< Upper -> 1;
 score_value_range(Actual, Lower, Upper, Harshness, Direction, Min, Max) ->
-  CloserToUpperEnd = abs(Actual - Lower) < abs(Actual - Upper),
+  io:format("Actual: ~p\nLower: ~p\nUpper: ~p\nHarshness: ~p\nDirection: ~p\nMin: ~p\nMax: ~p\n____\n",[Actual, Lower, Upper, Harshness, Direction, Min, Max]),
+  CloserToUpperEnd = abs(Actual - Lower) > abs(Actual - Upper),
+  io:format("~p\n", [CloserToUpperEnd]),
   Result = if
              CloserToUpperEnd -> score_value_target(Upper, Actual, Harshness, Max - Min);
              true -> score_value_target(Lower, Actual, Harshness, Max - Min)
