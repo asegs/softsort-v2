@@ -91,6 +91,8 @@ document.getElementById("set_category").onclick =(_) => {
                         selectorM.append(document.createElement("br"));
                         createNumberSlider(-1, 1, name + "_direction", 0, "Preferred direction", selectorM, 1);
                         selectorM.append(document.createElement("br"));
+                        createNumberSlider(0.1, 10, name + "_harshness", 5, "Harshness", selectorM, 0.1);
+                        selectorM.append(document.createElement("br"));
                         createNumberSlider(0.1, 10, name + "_weight", 1, "Weight", selectorM, 0.1);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
@@ -144,7 +146,7 @@ document.getElementById("set_category").onclick =(_) => {
                             data.selections.push([
                                 Number(document.getElementById(name + "_low").value),
                                 Number(document.getElementById(name + "_high").value),
-                                5,
+                                Number(document.getElementById(name + "_harshness").value),
                                 Number(document.getElementById(name + "_direction").value)
                             ]);
                             break;
