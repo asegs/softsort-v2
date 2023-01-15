@@ -41,8 +41,8 @@ get_top_k_unordered(RankedList, K, Lower, Upper, CyclesLeft) ->
   end.
 
 get_top_k_by_qs(RankedList, K) ->
-  Unordered = get_top_k_unordered(RankedList, K, 0, 1, 20),
-  Ordered =  lists:keysort(3, Unordered),
+  %Unordered = get_top_k_unordered(RankedList, K, 0, 1, 20),
+  Ordered =  lists:keysort(3, RankedList),
   lists:reverse(lists:sublist(Ordered, (length(Ordered) - K) + 1, length(Ordered))).
 
 top_k_scores(SchemaTypes, Options, Selections, Weights, MinMax, K) ->
