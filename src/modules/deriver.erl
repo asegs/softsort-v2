@@ -38,11 +38,11 @@ derive_schema_options(Name) ->
   write_schema_file(Name, Derived).
 
 load_schema_file(Name) ->
-  {ok, File} = file:read_file("records/"++Name++".json"),
+  {ok, File} = file:read_file("priv/records/"++Name++".json"),
   jsx:decode(File).
 
 write_by_name(Binary, Name) ->
-  file:write_file("records/" ++ Name ++ ".json", Binary).
+  file:write_file("priv/records/" ++ Name ++ ".json", Binary).
 
 write_schema_file(Name, Json) ->
   write_by_name(jsx:encode(Json), Name).
