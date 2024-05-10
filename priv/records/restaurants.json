@@ -131,7 +131,10 @@
       6,
       6,
       30,
-      ["Pizza", "Italian"],
+      [
+        "Pizza",
+        "Italian"
+      ],
       7
     ],
     [
@@ -141,7 +144,10 @@
       2,
       3,
       20,
-      ["Pizza", "Italian"],
+      [
+        "Pizza",
+        "Italian"
+      ],
       9
     ],
     [
@@ -151,7 +157,9 @@
       5,
       5,
       45,
-      ["Asian"],
+      [
+        "Asian"
+      ],
       7
     ],
     [
@@ -161,7 +169,10 @@
       3,
       4,
       30,
-      ["American", "Walk-In"],
+      [
+        "American",
+        "Walk-In"
+      ],
       6
     ],
     [
@@ -171,7 +182,10 @@
       3,
       5,
       30,
-      ["Indian", "Walk-In"],
+      [
+        "Indian",
+        "Walk-In"
+      ],
       7
     ],
     [
@@ -181,7 +195,10 @@
       7,
       5,
       60,
-      ["Pizza", "Italian"],
+      [
+        "Pizza",
+        "Italian"
+      ],
       5
     ],
     [
@@ -191,7 +208,10 @@
       2,
       6,
       25,
-      ["American", "Walk-In"],
+      [
+        "American",
+        "Walk-In"
+      ],
       8
     ],
     [
@@ -201,7 +221,10 @@
       2,
       6,
       25,
-      ["American", "Walk-In"],
+      [
+        "American",
+        "Walk-In"
+      ],
       7
     ],
     [
@@ -211,7 +234,9 @@
       4,
       5,
       60,
-      ["Asian"],
+      [
+        "Asian"
+      ],
       6
     ],
     [
@@ -221,7 +246,10 @@
       5,
       6,
       60,
-      ["Pizza", "Italian"],
+      [
+        "Pizza",
+        "Italian"
+      ],
       6
     ],
     [
@@ -231,7 +259,9 @@
       7,
       6,
       60,
-      ["Vegetarian"],
+      [
+        "Vegetarian"
+      ],
       3
     ],
     [
@@ -241,8 +271,52 @@
       5,
       6,
       60,
-      ["Breakfast"],
+      [
+        "Breakfast"
+      ],
       4
+    ]
+  ],
+  "parameters": [
+    [
+      4,
+      9
+    ],
+    [
+      1,
+      10
+    ],
+    [
+      3,
+      30
+    ],
+    [
+      3,
+      90
+    ],
+    [
+      "Mediterranean",
+      "Pizza",
+      "Indian",
+      "Indoor Seating",
+      "Sushi",
+      "Mexican",
+      "Sandwiches",
+      "Breakfast",
+      "Vegetarian",
+      "American",
+      "Walk-In",
+      "Seafood",
+      "Cocktails",
+      "Asian",
+      "Fusion",
+      "Italian",
+      "Reservations",
+      "Modern"
+    ],
+    [
+      3,
+      9
     ]
   ],
   "schema_names": [
@@ -260,46 +334,5 @@
     "math",
     "set",
     "math"
-  ],
-  "parameters": [
-    [
-      0,
-      10
-    ],
-    [
-      0,
-      10
-    ],
-    [
-      0,
-      10
-    ],
-    [
-      15,
-      90
-    ],
-    [
-      "Asian",
-      "Fusion",
-      "Walk-In",
-      "Indoor Seating",
-      "American",
-      "Sandwiches",
-      "Modern",
-      "Cocktails",
-      "Reservations",
-      "Mediterranean",
-      "Sushi",
-      "Seafood",
-      "Indian",
-      "Pizza",
-      "Italian",
-      "Vegetarian",
-      "Breakfast"
-    ],
-    [
-      0,
-      10
-    ]
   ]
 }

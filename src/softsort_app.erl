@@ -17,6 +17,7 @@ start(_StartType, _StartArgs) ->
         {<<"/schema/:schema">>, schema, []},
         {<<"/upload/:schema">>, upload, []},
         {<<"/sample/:schema">>, sample, []},
+        {<<"/schema/:schema/parameterize">>, parameterize, []},
         {"/[...]", cowboy_static, {priv_dir, softsort, "/"}}
       ]
     }
