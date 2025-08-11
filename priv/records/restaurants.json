@@ -3,38 +3,38 @@
     [
       1,
       "Gorgers",
-      9,
+      5,
       2,
-      30,
       3,
+      30,
       [
         "Sandwiches",
         "American",
         "Walk-In",
         "Indoor Seating"
       ],
-      8
+      5
     ],
     [
       2,
       "Mia",
-      6,
-      8,
-      8,
+      4,
+      4,
+      4,
       80,
       [
         "Asian",
         "Fusion",
         "Indoor Seating"
       ],
-      4
+      3
     ],
     [
       3,
       "Gola Osteria",
-      7,
-      9,
-      8,
+      4,
+      5,
+      5,
       90,
       [
         "Italian",
@@ -43,158 +43,107 @@
         "Cocktails",
         "Modern"
       ],
-      6
+      5
     ],
     [
       4,
       "Lev Kitchen",
-      5,
       2,
-      4,
+      2,
+      2,
       30,
       [
         "Walk-In",
         "Mediterranean",
         "Sandwiches"
       ],
-      7
+      3
     ],
     [
       5,
       "Asia Cuisine",
-      5,
-      4,
-      4,
+      3,
+      3,
+      3,
       45,
       [
         "Asian",
         "Sushi"
       ],
-      6
+      3
     ],
     [
       6,
       "Taco Bell",
-      4,
+      2,
       1,
-      3,
+      1,
       45,
       [
         "Walk-In",
         "Mexican"
       ],
-      9
+      5
     ],
     [
       7,
       "Taste of Thai Express",
-      7,
-      4,
-      4,
+      3,
+      3,
+      2,
       50,
       [
         "Asian",
         "Walk-In"
       ],
-      7
+      3
     ],
     [
       8,
       "Simeon's",
-      6,
-      10,
-      10,
+      4,
+      5,
+      5,
       90,
       [
         "Reservations",
         "Seafood"
       ],
-      5
+      2
     ],
     [
       9,
       "Sangam",
-      7,
-      5,
       4,
+      3,
+      2,
       60,
       [
         "Walk-In",
         "Indian"
       ],
-      8
+      4
     ],
     [
       10,
       "Franco's Pizza",
-      7,
-      6,
-      6,
+      4,
+      2,
+      3,
       30,
       [
         "Pizza",
         "Italian"
       ],
-      7
+      3
     ],
     [
       11,
       "Sal's Pizza",
-      9,
+      5,
       2,
-      3,
+      2,
       20,
-      [
-        "Pizza",
-        "Italian"
-      ],
-      9
-    ],
-    [
-      12,
-      "Saigon Kitchen",
-      7,
-      5,
-      5,
-      45,
-      [
-        "Asian"
-      ],
-      7
-    ],
-    [
-      13,
-      "Purity",
-      6,
-      3,
-      4,
-      30,
-      [
-        "American",
-        "Walk-In"
-      ],
-      6
-    ],
-    [
-      14,
-      "Diamond's",
-      8,
-      3,
-      5,
-      30,
-      [
-        "Indian",
-        "Walk-In"
-      ],
-      7
-    ],
-    [
-      15,
-      "Thompson and Bleeker",
-      5,
-      7,
-      5,
-      60,
       [
         "Pizza",
         "Italian"
@@ -202,96 +151,183 @@
       5
     ],
     [
-      16,
-      "Five Guys",
-      8,
-      2,
-      6,
-      25,
-      [
-        "American",
-        "Walk-In"
-      ],
-      8
-    ],
-    [
-      17,
-      "Wings Over Ithaca",
-      9,
-      2,
-      6,
-      25,
-      [
-        "American",
-        "Walk-In"
-      ],
-      7
-    ],
-    [
-      18,
-      "Asian Chili Spot",
-      6,
-      4,
-      5,
-      60,
+      12,
+      "Saigon Kitchen",
+      3,
+      3,
+      3,
+      45,
       [
         "Asian"
       ],
-      6
+      3
     ],
     [
-      19,
-      "Ciao",
-      6,
-      5,
-      6,
+      13,
+      "Purity",
+      3,
+      2,
+      2,
+      30,
+      [
+        "American",
+        "Walk-In"
+      ],
+      3
+    ],
+    [
+      14,
+      "Diamond's",
+      4,
+      3,
+      2,
+      30,
+      [
+        "Indian",
+        "Walk-In"
+      ],
+      3
+    ],
+    [
+      15,
+      "Thompson and Bleeker",
+      3,
+      4,
+      3,
       60,
       [
         "Pizza",
         "Italian"
       ],
-      6
+      2
     ],
     [
-      20,
-      "Moosewood",
+      16,
+      "Five Guys",
+      4,
+      1,
+      4,
+      25,
+      [
+        "American",
+        "Walk-In"
+      ],
+      5
+    ],
+    [
+      17,
+      "Wings Over Ithaca",
       5,
-      7,
-      6,
+      1,
+      4,
+      25,
+      [
+        "American",
+        "Walk-In"
+      ],
+      4
+    ],
+    [
+      18,
+      "Asian Chili Spot",
+      3,
+      3,
+      3,
       60,
       [
-        "Vegetarian"
+        "Asian"
       ],
       3
     ],
     [
+      19,
+      "Ciao",
+      3,
+      4,
+      3,
+      60,
+      [
+        "Pizza",
+        "Italian"
+      ],
+      3
+    ],
+    [
+      20,
+      "Moosewood",
+      2,
+      4,
+      4,
+      60,
+      [
+        "Vegetarian"
+      ],
+      1
+    ],
+    [
       21,
       "Cafe Dewitt",
-      6,
-      5,
-      6,
+      3,
+      4,
+      4,
       60,
       [
         "Breakfast"
       ],
-      4
+      2
+    ],
+    [
+      22,
+      "Salt Point",
+      3,
+      2,
+      3,
+      40,
+      [
+        "Pizza"
+      ],
+      3
+    ],
+    [
+      23,
+      "Coalyard",
+      3,
+      2,
+      3,
+      40,
+      [
+        "Breakfast"
+      ],
+      3
+    ],
+    [
+      24,
+      "Allechant",
+      3,
+      4,
+      4,
+      90,
+      [
+        "Breakfast"
+      ],
+      3
     ]
   ],
   "parameters": [
     [
-      4,
-      9
+      2,
+      5
     ],
     [
       1,
-      10
+      5
     ],
     [
-      3,
-      30
+      1,
+      5
     ],
     [
-      3,
+      20,
       90
     ],
     [
@@ -315,12 +351,12 @@
       "Modern"
     ],
     [
-      3,
-      9
+      1,
+      5
     ]
   ],
   "schema_names": [
-    "Hungryness",
+    "Portion size",
     "Fanciness",
     "Priciness",
     "Time",

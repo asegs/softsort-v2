@@ -11,7 +11,7 @@
 
 start(_StartType, _StartArgs) ->
   Dispatch = cowboy_router:compile([
-    { <<"localhost">>,
+    { <<"_">>,
       [
         {<<"/:schema">>, score, []},
         {<<"/schema/:schema">>, schema, []},
