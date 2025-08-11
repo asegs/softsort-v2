@@ -69,7 +69,7 @@ const createNumberSlider = (min, max, idFor, val, title, addTo, step) => {
 
 document.getElementById("set_category").onclick =(_) => {
     const schema = document.getElementById("schema").value
-    fetch("http://localhost:8081/schema/" + schema)
+    fetch("https://softsort.org/schema/" + schema)
         .then(r => r.json())
         .then(j => {
             document.getElementById("selectors").innerHTML = "";
@@ -158,7 +158,7 @@ document.getElementById("set_category").onclick =(_) => {
                     }
                 });
                 console.log(data);
-                fetch("http://localhost:8081/" + document.getElementById("schema").value, {
+                fetch("https://softsort.org/" + document.getElementById("schema").value, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
