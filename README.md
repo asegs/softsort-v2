@@ -1,9 +1,4 @@
-softsort
-=====
+### Softsort
 
-An OTP application
+Run it with `rebar3 shell` or build a release with `rebar3 release`.
 
-Build
------
-
-    $ rebar3 compile

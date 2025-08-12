@@ -1,4 +1,3 @@
-let Schemas = {};
 const FUNCTION_PLOT_ID_NAME = "graph";
 const zip = (lists) => {
     const tupleSize = lists.length;
@@ -14,7 +13,10 @@ const zip = (lists) => {
     return result;
 }
 
-const getWeights = (names) => names.map(n => Number(document.getElementById(n + "_weight").value));
+const getWeights = (names) => names.map(n => {
+    const safeName = n.toLowerCase().replaceAll(' ','_');
+    return Number(document.getElementById(safeName + "_weight").value);
+});
 
 const addResults = (results, names) => {
     const r = document.getElementById("results");
@@ -79,7 +81,6 @@ document.getElementById("set_category").onclick =(_) => {
     fetch(window.location.origin + "/schema/" + schema)
         .then(r => r.json())
         .then(j => {
-            Schemas = {};
             document.getElementById("selectors").innerHTML = "";
             document.getElementById("results").innerHTML = "";
             document.getElementById("results").innerText = "";
@@ -88,15 +89,13 @@ document.getElementById("set_category").onclick =(_) => {
                 const name = element[0];
                 const meta = element[1];
                 const type = element[2];
-                Schemas[name] = {
-                    'meta': meta,
-                    'type': type
-                }
+
+                const safeName = name.toLowerCase().replaceAll(' ','_');
+
                 switch (type) {
                     case "math":
                         const selectorM = document.createElement("div");
                         selectorM.append(name);
-                        const safeName = name.toLowerCase().replaceAll(' ','_');
                         selectorM.append(document.createElement("br"))
                         createNumberSlider(meta[0],meta[1], safeName + "_low", meta[0], "Lower bound", selectorM,1, safeName);
                         selectorM.append(document.createElement("br"))
@@ -124,14 +123,14 @@ document.getElementById("set_category").onclick =(_) => {
                             input.type = "checkbox";
                             input.name = name;
                             input.value = item;
-                            input.id = name + "_" + item;
-                            label.for = name + "_" + item;
+                            input.id = safeName + "_" + item;
+                            label.for = safeName + "_" + item;
                             label.innerText = item;
                             fieldset.append(input);
                             fieldset.append(label);
                         }
                         selector.append(fieldset);
-                        createNumberSlider(0.1, 10, name + "_weight", 1, "Weight", selector,0.1);
+                        createNumberSlider(0.1, 10, safeName + "_weight", 1, "Weight", selector,0.1);
                         selector.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selector);
                         break;
@@ -157,24 +156,26 @@ document.getElementById("set_category").onclick =(_) => {
                     const meta = item[1];
                     const type = item[2];
 
-                    data.weights.push(Number(document.getElementById(name + "_weight").value));
+                    const safeName = name.toLowerCase().replaceAll(' ','_');
+
+
+                    data.weights.push(Number(document.getElementById(safeName + "_weight").value));
                     switch (type) {
                         case "math":
                             data.selections.push([
-                                Number(document.getElementById(name + "_low").value),
-                                Number(document.getElementById(name + "_high").value),
-                                Number(document.getElementById(name + "_harshness").value),
-                                Number(document.getElementById(name + "_direction").value)
+                                Number(document.getElementById(safeName + "_low").value),
+                                Number(document.getElementById(safeName + "_high").value),
+                                Number(document.getElementById(safeName + "_harshness").value),
+                                Number(document.getElementById(safeName + "_direction").value)
                             ]);
                             break;
                         default:
-                            const boxes = meta.map(item => document.getElementById(name + "_" + item));
+                            const boxes = meta.map(item => document.getElementById(safeName + "_" + item));
                             const checkedBoxes = boxes.filter(b => b.checked);
                             const names = checkedBoxes.map(b => b.value);
                             data.selections.push(names);
                     }
                 });
-                console.log(data);
                 fetch(window.location.origin + "/" + document.getElementById("schema").value, {
                     method: 'POST',
                     headers: {
