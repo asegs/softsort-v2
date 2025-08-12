@@ -1,3 +1,5 @@
+let Schemas = {};
+const FUNCTION_PLOT_ID_NAME = "graph";
 const zip = (lists) => {
     const tupleSize = lists.length;
     const listLength = lists[0].length;
@@ -50,7 +52,7 @@ const asPercent = (numString, weight) => {
     return rounded.toString().replace(/\.0+$/, '') + "%";
 }
 
-const createNumberSlider = (min, max, idFor, val, title, addTo, step) => {
+const createNumberSlider = (min, max, idFor, val, title, addTo, step, safeName) => {
     const range = document.createElement("input");
     range.type = "range";
     range.min = min;
@@ -58,7 +60,12 @@ const createNumberSlider = (min, max, idFor, val, title, addTo, step) => {
     range.id = idFor;
     range.value = val;
     range.step = step;
-    range.oninput= (e) => document.getElementById(idFor + "_output").value = e.target.value;
+    range.oninput= (e) => {
+        // Wat is this for again?  Can we just get value directly from input?
+        document.getElementById(idFor + "_output").value = e.target.value;
+        // Redraw equation every time any source value changes.
+        drawMathPlot(safeName);
+    }
     const p = document.createElement("output");
     p.id = idFor + "_output";
     p.value = val;
@@ -69,9 +76,10 @@ const createNumberSlider = (min, max, idFor, val, title, addTo, step) => {
 
 document.getElementById("set_category").onclick =(_) => {
     const schema = document.getElementById("schema").value
-    fetch("https://softsort.org/schema/" + schema)
+    fetch(window.location.origin + "/schema/" + schema)
         .then(r => r.json())
         .then(j => {
+            Schemas = {};
             document.getElementById("selectors").innerHTML = "";
             document.getElementById("results").innerHTML = "";
             document.getElementById("results").innerText = "";
@@ -80,22 +88,31 @@ document.getElementById("set_category").onclick =(_) => {
                 const name = element[0];
                 const meta = element[1];
                 const type = element[2];
+                Schemas[name] = {
+                    'meta': meta,
+                    'type': type
+                }
                 switch (type) {
                     case "math":
                         const selectorM = document.createElement("div");
                         selectorM.append(name);
+                        const safeName = name.toLowerCase().replaceAll(' ','_');
                         selectorM.append(document.createElement("br"))
-                        createNumberSlider(meta[0],meta[1], name + "_low", meta[0], "Lower bound", selectorM,1);
+                        createNumberSlider(meta[0],meta[1], safeName + "_low", meta[0], "Lower bound", selectorM,1, safeName);
                         selectorM.append(document.createElement("br"))
-                        createNumberSlider(meta[0], meta[1], name + "_high", meta[1], "Upper bound", selectorM,1);
+                        createNumberSlider(meta[0], meta[1], safeName + "_high", meta[1], "Upper bound", selectorM,1, safeName);
                         selectorM.append(document.createElement("br"));
-                        createNumberSlider(-1, 1, name + "_direction", 0, "Preferred direction", selectorM, 1);
+                        createNumberSlider(-1, 1, safeName + "_direction", 0, "Preferred direction", selectorM, 1, safeName);
                         selectorM.append(document.createElement("br"));
-                        createNumberSlider(0.1, 10, name + "_harshness", 5, "Harshness", selectorM, 0.1);
+                        createNumberSlider(0.1, 10, safeName + "_harshness", 5, "Harshness", selectorM, 0.1, safeName);
                         selectorM.append(document.createElement("br"));
-                        createNumberSlider(0.1, 10, name + "_weight", 1, "Weight", selectorM, 0.1);
+                        createNumberSlider(0.1, 10, safeName + "_weight", 1, "Weight", selectorM, 0.1, safeName);
+                        const graphDiv = document.createElement("div");
+                        graphDiv.id = safeName + "_" + FUNCTION_PLOT_ID_NAME;
+                        selectorM.append(graphDiv);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
+                        drawMathPlot(safeName);
                         break;
                     default:
                         const selector = document.createElement("div");
@@ -158,7 +175,7 @@ document.getElementById("set_category").onclick =(_) => {
                     }
                 });
                 console.log(data);
-                fetch("https://softsort.org/" + document.getElementById("schema").value, {
+                fetch(window.location.origin + "/" + document.getElementById("schema").value, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -173,3 +190,64 @@ document.getElementById("set_category").onclick =(_) => {
             document.getElementById("selectors").append(button);
         })
 }
+
+function drawMathPlot(name) {
+    const graphDivName = '#' + name + '_' + FUNCTION_PLOT_ID_NAME;
+    const graphWeight = Number(document.getElementById(name + "_weight").value);
+    const lowerBound = Number(document.getElementById(name + "_low").min);
+    const upperBound = Number(document.getElementById(name + "_high").max);
+    const selectedLow = Number(document.getElementById(name + "_low").value);
+    const selectedHigh = Number(document.getElementById(name + "_high").value);
+    const harshness = Number(document.getElementById(name + "_harshness").value);
+    const direction = Number(document.getElementById(name + "_direction").value);
+
+    const spread = upperBound - lowerBound;
+    const safeHarshness = (harshness === 0) ? 0.1 : harshness;
+
+    const stdDev = spread / safeHarshness;
+    const safeStdDev = (-1 < stdDev && stdDev < 1) ? 1 : stdDev;
+
+    const lowerFunction = `exp(-1 * (${selectedLow} - x)^2 / (2 * ${safeStdDev}^2))`;
+    const upperFunction = `exp(-1 * (x - ${selectedHigh})^2 / (2 * ${safeStdDev}^2))`;
+
+    let directedLowerFunction = lowerFunction;
+    let directedUpperFunction = upperFunction;
+    let bottomColor = 'orange';
+    let topColor = 'orange';
+    let middleColor = 'green';
+
+    // Non-integer exponents are against the law.  Straight to jail.
+    const intHarshness = Math.trunc(harshness)
+
+    switch (direction) {
+        case 1:
+            // Make the results more gentle
+            directedUpperFunction = `nthRoot(${upperFunction}, ${harshness})`;
+            topColor = 'blue';
+            // Make the results more harsh
+            directedLowerFunction = `(${lowerFunction})^${intHarshness}`;
+            bottomColor = 'red';
+            break;
+        case -1:
+            // Make the results more gentle
+            directedLowerFunction = `nthRoot(${lowerFunction},${harshness})`;
+            bottomColor = 'blue';
+            // Make the results more harsh
+            directedUpperFunction = `(${upperFunction})^${intHarshness}`;
+            topColor = 'red';
+            break;
+    }
+
+    functionPlot({
+        target: graphDivName,
+        data: [
+            { fn: `${graphWeight} * ${directedLowerFunction}`, range: [lowerBound, selectedLow], color: bottomColor},
+            { fn: `${graphWeight}`, range: [selectedLow, selectedHigh], color: middleColor},
+            { fn: `${graphWeight} * ${directedUpperFunction}`, range: [selectedHigh, upperBound], color: topColor}
+        ],
+        xAxis: { domain: [Number(lowerBound), Number(upperBound)] },
+        yAxis: { domain: [0, 12]},
+        disableZoom: true
+    })
+}
+
