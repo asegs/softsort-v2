@@ -16,7 +16,9 @@ score_membership([], _) ->
 score_membership(_,[]) ->
   1;
 score_membership(Desired, Options) ->
-  Union = sets:intersection(sets:from_list(Desired), sets:from_list(Options)),
+  DesiredSet = sets:from_list(Desired),
+  FoundSet = sets:from_list(Options),
+  Union = sets:intersection(DesiredSet, FoundSet),
   length(sets:to_list(Union))/length(Desired).
 
 
