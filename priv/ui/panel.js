@@ -56,6 +56,7 @@ const asPercent = (numString, weight) => {
 }
 
 function createDoubleSlider(name, title, type, root, options) {
+    const rangeSliderTotalDiv = document.createElement("div");
     const rangeSliderWrapperDiv = document.createElement("div")
     rangeSliderWrapperDiv.className = "range-slider-wrapper";
     rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
@@ -88,8 +89,10 @@ function createDoubleSlider(name, title, type, root, options) {
     rangeSliderWrapperDiv.append(rangeSliderDiv);
     rangeSliderWrapperDiv.append(right)
 
-    root.append(titleDiv)
-    root.append(rangeSliderWrapperDiv)
+    rangeSliderTotalDiv.append(titleDiv)
+    rangeSliderTotalDiv.append(rangeSliderWrapperDiv)
+
+    root.append(rangeSliderTotalDiv)
     const eventOptions = {
         ...options,
         onInput: (e) => {
@@ -108,6 +111,7 @@ function createDoubleSlider(name, title, type, root, options) {
 }
 
 function createSingleSlider(name, title, type, root, options) {
+    const rangeSliderTotalDiv = document.createElement("div");
     const rangeSliderWrapperDiv = document.createElement("div")
     rangeSliderWrapperDiv.className = "range-slider-wrapper";
     rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
@@ -127,15 +131,17 @@ function createSingleSlider(name, title, type, root, options) {
     const value = document.createElement("output");
 
     value.id = `${name}_${type}_value`;
-    value.value = options.value[1];
+    value.value = type === 'direction' ? 'Either' : options.value[1];
 
 
     // Proper container maybe?
     rangeSliderWrapperDiv.append(rangeSliderDiv);
     rangeSliderWrapperDiv.append(value);
 
-    root.append(titleDiv)
-    root.append(rangeSliderWrapperDiv);
+    rangeSliderTotalDiv.append(titleDiv)
+    rangeSliderTotalDiv.append(rangeSliderWrapperDiv);
+
+    root.append(rangeSliderTotalDiv);
     const eventOptions = {
         ...options,
         thumbsDisabled: [true, false],
@@ -143,7 +149,20 @@ function createSingleSlider(name, title, type, root, options) {
         // Is this called on reading value?
         onInput: (e) => {
             drawMathPlot(name);
-            value.value = e[1];
+            if (type === 'direction') {
+                switch (e[1]) {
+                    case 1:
+                        value.value = 'Higher'
+                        break
+                    case -1:
+                        value.value = 'Lower'
+                        break
+                    default:
+                        value.value = 'Either'
+                }
+            } else {
+                value.value = e[1];
+            }
         },
     }
 
@@ -152,8 +171,8 @@ function createSingleSlider(name, title, type, root, options) {
     }
 }
 
-document.getElementById("set_category").onclick =(_) => {
-    const schema = document.getElementById("schema").value
+document.getElementById("category").oninput =(_) => {
+    const schema = document.getElementById("category").value
     fetch(window.location.origin + "/schema/" + schema)
         .then(r => r.json())
         .then(j => {
@@ -183,12 +202,14 @@ document.getElementById("set_category").onclick =(_) => {
                     case "math":
                         const selectorM = document.createElement("div");
                         selectorM.append(nameHeader);
+                        const sliderTiles = document.createElement("div");
+                        sliderTiles.className = "selectors-wrapper";
                         createSliderCallbacks.push(
                             createDoubleSlider(
                                 safeName,
                                 "Selection",
                                 "selection",
-                                selectorM,
+                                sliderTiles,
                                 {
                                     min: meta[0],
                                     max: meta[1],
@@ -201,7 +222,7 @@ document.getElementById("set_category").onclick =(_) => {
                                 safeName,
                                 "Preferred direction",
                                 "direction",
-                                selectorM,
+                                sliderTiles,
                                 {
                                     min: -1,
                                     max: 1,
@@ -215,7 +236,7 @@ document.getElementById("set_category").onclick =(_) => {
                                 safeName,
                                 "Harshness",
                                 "harshness",
-                                selectorM,
+                                sliderTiles,
                                 {
                                     min: 0.1,
                                     max: 10,
@@ -230,7 +251,7 @@ document.getElementById("set_category").onclick =(_) => {
                                 safeName,
                                 "Weight",
                                 "weight",
-                                selectorM,
+                                sliderTiles,
                                 {
                                     min: 0.1,
                                     max: 10,
@@ -241,6 +262,7 @@ document.getElementById("set_category").onclick =(_) => {
                         )
                         const graphDiv = document.createElement("div");
                         graphDiv.id = safeName + "_" + FUNCTION_PLOT_ID_NAME;
+                        selectorM.append(sliderTiles)
                         selectorM.append(graphDiv);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
@@ -324,7 +346,7 @@ document.getElementById("set_category").onclick =(_) => {
                             data.selections.push(names);
                     }
                 });
-                fetch(window.location.origin + "/" + document.getElementById("schema").value, {
+                fetch(window.location.origin + "/" + document.getElementById("category").value, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -397,5 +419,21 @@ function drawMathPlot(name) {
         yAxis: { domain: [0, 12]},
         disableZoom: true
     })
+}
+
+window.onload = () => {
+    fetch(window.location.origin + "/schemas/all").then(
+        r => r.json()
+    ).then(
+        schemas => {
+            const schemaNames = schemas['schemas'];
+            const dropdown = document.getElementById("category");
+            schemaNames.forEach(name => {
+                const option = document.createElement("option");
+                option.innerText = name;
+                dropdown.append(option);
+            });
+        }
+    )
 }
 

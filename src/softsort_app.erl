@@ -14,6 +14,7 @@ start(_StartType, _StartArgs) ->
     { '_',
       [
         {<<"/:schema">>, score, []},
+        {<<"/schemas/all">>, all_schemas, []},
         {<<"/schema/:schema">>, schema, []},
         {<<"/upload/:schema">>, upload, []},
         {<<"/sample/:schema">>, sample, []},

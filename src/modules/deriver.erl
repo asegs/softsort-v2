@@ -1,5 +1,5 @@
 -module(deriver).
--export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2, get_missing_keys/1, get_mismatched_types/3]).
+-export([derive_schema_options/1, get_schema/1, get_body/1, write_by_name/2, get_missing_keys/1, get_mismatched_types/3, get_all_schemas/0]).
 
 unique(List) ->
   sets:to_list(sets:from_list(List)).
@@ -36,6 +36,13 @@ derive_schema_options(Name) ->
   Params = lists:map(fun derive_schema_option/1, Data),
   Derived = maps:put(<<"parameters">>, Params, Table),
   write_schema_file(Name, Derived).
+
+get_all_schemas() ->
+  PrivDir = code:priv_dir(softsort),
+  RecordsDir = filename:join([PrivDir, "records"]),
+  {ok, Records} = file:list_dir(RecordsDir),
+  NoFileNameRecords = lists:map(fun filename:rootname/1, Records),
+  lists:map(fun list_to_binary/1, NoFileNameRecords).
 
 load_schema_file(Name) ->
   PrivDir = code:priv_dir(softsort),
