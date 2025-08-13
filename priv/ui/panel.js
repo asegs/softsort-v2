@@ -270,6 +270,16 @@ document.getElementById("category").oninput =(_) => {
                     default:
                         const selector = document.createElement("div");
                         selector.append(nameHeader)
+                        if (type === 'set') {
+                            // Toggle here that if set goes between any of and as many of.
+                            const toggle = document.createElement("input");
+                            toggle.type = 'checkbox';
+                            toggle.id = `${safeName}_toggle`;
+                            toggle.name = 'Select mode';
+
+                            selector.append(toggle);
+                            const toggleSwitch = new ToggleSwitch(toggle);
+                        }
                         const fieldset = document.createElement("fieldset");
                         for (const item of meta) {
                             const input = document.createElement("input");

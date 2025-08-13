@@ -21,3 +21,8 @@
 .title {
     text-align: center;
 }
+
+.toggle-switch {
+    margin-bottom: 20px;
+    font-family: monospace;
+}

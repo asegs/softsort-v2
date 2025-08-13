@@ -18,3 +18,11 @@ So, any set intersection is 1, otherwise is 0.
 
 I think everything is actually covered in those two cases, it's tricky because the schema is the exact same.
 Maybe let the user pick if they want percentage match mode, or just has one mode?
+
+Let's say:
+
+Any of (many <-> many) set mode
+As many of (many <->) set mode
+Any of (many <-> one) list mode
+
+Ranked choice for list mode?
