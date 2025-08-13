@@ -271,14 +271,31 @@ document.getElementById("category").oninput =(_) => {
                         const selector = document.createElement("div");
                         selector.append(nameHeader)
                         if (type === 'set') {
+                            const toggleDiv = document.createElement("div");
+                            toggleDiv.className = "flex-div";
                             // Toggle here that if set goes between any of and as many of.
                             const toggle = document.createElement("input");
                             toggle.type = 'checkbox';
                             toggle.id = `${safeName}_toggle`;
                             toggle.name = 'Select mode';
 
-                            selector.append(toggle);
+                            toggleDiv.append(toggle);
                             const toggleSwitch = new ToggleSwitch(toggle);
+                            toggle.onchange = () => {
+                                const v = toggleSwitch.getValue();
+                                if (v) {
+                                    toggleState.innerText = "As many of:"
+                                } else {
+                                    toggleState.innerText = "Any one of of:"
+                                }
+                            }
+
+                            const toggleState = document.createElement("p")
+                            toggleState.innerText = "Any one of:";
+                            toggleState.className = 'toggle-switch-text';
+                            toggleDiv.append(toggleState);
+
+                            selector.append(toggleDiv);
                         }
                         const fieldset = document.createElement("fieldset");
                         for (const item of meta) {

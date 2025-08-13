@@ -6,6 +6,10 @@
     display: flex;
 }
 
+.flex-div {
+    display: flex;
+}
+
 .selectors-wrapper {
     width: 500px;
     display: flex;
@@ -26,3 +30,9 @@
     margin-bottom: 20px;
     font-family: monospace;
 }
+
+.toggle-switch-text {
+    margin-bottom: 20px;
+    font-family: monospace;
+}
+
