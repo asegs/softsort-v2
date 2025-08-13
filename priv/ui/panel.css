@@ -1,3 +1,17 @@
 .single-selector .range-slider__thumb[data-lower] {
     width: 0;
 }
+
+.range-slider-wrapper {
+    margin-left: 30px;
+    margin-right: 30px;
+    width: 200px;
+    display: flex;
+}
+
+.range-slider-title {
+    margin-left: 30px;
+    margin-right: 30px;
+    width: 200px;
+    text-align: center;
+}

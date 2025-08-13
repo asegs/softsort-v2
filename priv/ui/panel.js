@@ -56,13 +56,26 @@ const asPercent = (numString, weight) => {
 }
 
 function createDoubleSlider(name, title, type, root, options) {
+    const rangeSliderWrapperDiv = document.createElement("div")
+    rangeSliderWrapperDiv.className = "range-slider-wrapper";
+    rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
+
+    const titleDiv = document.createElement("div")
+    titleDiv.className = "range-slider-title";
+    titleDiv.id = `${name}_${type}_range_slider_title`
+
+    const titleElement = document.createElement("p");
+    titleElement.innerText = title;
+    titleDiv.append(titleElement);
+
+
     const rangeSliderDiv = document.createElement("div");
-    rangeSliderDiv.style['width'] = "200px";
-    rangeSliderDiv.style['margin'] = "30px"
     rangeSliderDiv.id = `${name}_${type}_range_slider`;
 
     const left = document.createElement("output");
     const right = document.createElement("output");
+
+
 
     left.id = `${name}_${type}_left`;
     right.id = `${name}_${type}_right`;
@@ -71,9 +84,12 @@ function createDoubleSlider(name, title, type, root, options) {
 
 
     // Proper container maybe?
-    root.append(left)
-    root.append(rangeSliderDiv);
-    root.append(right)
+    rangeSliderWrapperDiv.append(left)
+    rangeSliderWrapperDiv.append(rangeSliderDiv);
+    rangeSliderWrapperDiv.append(right)
+
+    root.append(titleDiv)
+    root.append(rangeSliderWrapperDiv)
     const eventOptions = {
         ...options,
         onInput: (e) => {
@@ -92,9 +108,19 @@ function createDoubleSlider(name, title, type, root, options) {
 }
 
 function createSingleSlider(name, title, type, root, options) {
+    const rangeSliderWrapperDiv = document.createElement("div")
+    rangeSliderWrapperDiv.className = "range-slider-wrapper";
+    rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
+
+    const titleDiv = document.createElement("div")
+    titleDiv.className = "range-slider-title";
+    titleDiv.id = `${name}_${type}_range_slider_title`
+
+    const titleElement = document.createElement("p");
+    titleElement.innerText = title;
+    titleDiv.append(titleElement);
+
     const rangeSliderDiv = document.createElement("div");
-    rangeSliderDiv.style['width'] = "200px";
-    rangeSliderDiv.style['margin'] = "30px"
     rangeSliderDiv.className = "single-selector"
     rangeSliderDiv.id = `${name}_${type}_range_slider`;
 
@@ -105,8 +131,11 @@ function createSingleSlider(name, title, type, root, options) {
 
 
     // Proper container maybe?
-    root.append(rangeSliderDiv);
-    root.append(value)
+    rangeSliderWrapperDiv.append(rangeSliderDiv);
+    rangeSliderWrapperDiv.append(value);
+
+    root.append(titleDiv)
+    root.append(rangeSliderWrapperDiv);
     const eventOptions = {
         ...options,
         thumbsDisabled: [true, false],
@@ -275,15 +304,13 @@ document.getElementById("set_category").onclick =(_) => {
 
                     const safeName = name.toLowerCase().replaceAll(' ','_');
 
-
-                    data.weights.push(Number(document.getElementById(safeName + "_weight").value));
+                    data.weights.push(Inputs[safeName]['weight'].value()[1]);
                     switch (type) {
                         case "math":
                             data.selections.push([
-                                Number(document.getElementById(safeName + "_low").value),
-                                Number(document.getElementById(safeName + "_high").value),
-                                Number(document.getElementById(safeName + "_harshness").value),
-                                Number(document.getElementById(safeName + "_direction").value)
+                                ...Inputs[safeName]['selection'].value(),
+                                Inputs[safeName]['harshness'].value()[1],
+                                Inputs[safeName]['direction'].value()[1]
                             ]);
                             break;
                         default:
