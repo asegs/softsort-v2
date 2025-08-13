@@ -1,0 +1,3 @@
+.single-selector .range-slider__thumb[data-lower] {
+    width: 0;
+}

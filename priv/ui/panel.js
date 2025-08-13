@@ -1,4 +1,5 @@
 const FUNCTION_PLOT_ID_NAME = "graph";
+let Inputs = {};
 const zip = (lists) => {
     const tupleSize = lists.length;
     const listLength = lists[0].length;
@@ -15,7 +16,7 @@ const zip = (lists) => {
 
 const getWeights = (names) => names.map(n => {
     const safeName = n.toLowerCase().replaceAll(' ','_');
-    return Number(document.getElementById(safeName + "_weight").value);
+    return Inputs[safeName]['weight'].value()[1];
 });
 
 const addResults = (results, names) => {
@@ -54,26 +55,72 @@ const asPercent = (numString, weight) => {
     return rounded.toString().replace(/\.0+$/, '') + "%";
 }
 
-const createNumberSlider = (min, max, idFor, val, title, addTo, step, safeName) => {
-    const range = document.createElement("input");
-    range.type = "range";
-    range.min = min;
-    range.max = max;
-    range.id = idFor;
-    range.value = val;
-    range.step = step;
-    range.oninput= (e) => {
-        // Wat is this for again?  Can we just get value directly from input?
-        document.getElementById(idFor + "_output").value = e.target.value;
-        // Redraw equation every time any source value changes.
-        drawMathPlot(safeName);
+function createDoubleSlider(name, title, type, root, options) {
+    const rangeSliderDiv = document.createElement("div");
+    rangeSliderDiv.style['width'] = "200px";
+    rangeSliderDiv.style['margin'] = "30px"
+    rangeSliderDiv.id = `${name}_${type}_range_slider`;
+
+    const left = document.createElement("output");
+    const right = document.createElement("output");
+
+    left.id = `${name}_${type}_left`;
+    right.id = `${name}_${type}_right`;
+    left.value = options.value[0];
+    right.value = options.value[1];
+
+
+    // Proper container maybe?
+    root.append(left)
+    root.append(rangeSliderDiv);
+    root.append(right)
+    const eventOptions = {
+        ...options,
+        onInput: (e) => {
+            drawMathPlot(name);
+            left.value = e[0];
+            right.value = e[1];
+        },
     }
-    const p = document.createElement("output");
-    p.id = idFor + "_output";
-    p.value = val;
-    addTo.append(title);
-    addTo.append(range);
-    addTo.append(p);
+
+    // We can't run this until the root div mounts to the page.
+    // So here's a callback.
+
+    return () => {
+        Inputs[name][type] = rangeSlider(rangeSliderDiv, eventOptions);
+    }
+}
+
+function createSingleSlider(name, title, type, root, options) {
+    const rangeSliderDiv = document.createElement("div");
+    rangeSliderDiv.style['width'] = "200px";
+    rangeSliderDiv.style['margin'] = "30px"
+    rangeSliderDiv.className = "single-selector"
+    rangeSliderDiv.id = `${name}_${type}_range_slider`;
+
+    const value = document.createElement("output");
+
+    value.id = `${name}_${type}_value`;
+    value.value = options.value[1];
+
+
+    // Proper container maybe?
+    root.append(rangeSliderDiv);
+    root.append(value)
+    const eventOptions = {
+        ...options,
+        thumbsDisabled: [true, false],
+        rangeSlideDisabled: true,
+        // Is this called on reading value?
+        onInput: (e) => {
+            drawMathPlot(name);
+            value.value = e[1];
+        },
+    }
+
+    return () => {
+        Inputs[name][type] = rangeSlider(rangeSliderDiv, eventOptions);
+    }
 }
 
 document.getElementById("set_category").onclick =(_) => {
@@ -85,33 +132,85 @@ document.getElementById("set_category").onclick =(_) => {
             document.getElementById("results").innerHTML = "";
             document.getElementById("results").innerText = "";
             const zipped = zip([j["names"], j["parameters"], j["types"]]);
+            const createSliderCallbacks = [];
             zipped.forEach(element => {
                 const name = element[0];
                 const meta = element[1];
                 const type = element[2];
 
+
                 const safeName = name.toLowerCase().replaceAll(' ','_');
+                Inputs[safeName] = {
+                    meta: meta,
+                    type: type
+                }
+
 
                 switch (type) {
                     case "math":
                         const selectorM = document.createElement("div");
                         selectorM.append(name);
-                        selectorM.append(document.createElement("br"))
-                        createNumberSlider(meta[0],meta[1], safeName + "_low", meta[0], "Lower bound", selectorM,1, safeName);
-                        selectorM.append(document.createElement("br"))
-                        createNumberSlider(meta[0], meta[1], safeName + "_high", meta[1], "Upper bound", selectorM,1, safeName);
-                        selectorM.append(document.createElement("br"));
-                        createNumberSlider(-1, 1, safeName + "_direction", 0, "Preferred direction", selectorM, 1, safeName);
-                        selectorM.append(document.createElement("br"));
-                        createNumberSlider(0.1, 10, safeName + "_harshness", 5, "Harshness", selectorM, 0.1, safeName);
-                        selectorM.append(document.createElement("br"));
-                        createNumberSlider(0.1, 10, safeName + "_weight", 1, "Weight", selectorM, 0.1, safeName);
+                        createSliderCallbacks.push(
+                            createDoubleSlider(
+                                safeName,
+                                "Selection",
+                                "selection",
+                                selectorM,
+                                {
+                                    min: meta[0],
+                                    max: meta[1],
+                                    step: 1,
+                                    value: [meta[0], meta[1]],
+                                })
+                        )
+                        createSliderCallbacks.push(
+                            createSingleSlider(
+                                safeName,
+                                "Preferred direction",
+                                "direction",
+                                selectorM,
+                                {
+                                    min: -1,
+                                    max: 1,
+                                    step: 1,
+                                    value: [-1, 0]
+                                }
+                            )
+                        )
+                        createSliderCallbacks.push(
+                            createSingleSlider(
+                                safeName,
+                                "Harshness",
+                                "harshness",
+                                selectorM,
+                                {
+                                    min: 0.1,
+                                    max: 10,
+                                    step: 0.1,
+                                    value: [0.1, 5]
+                                }
+                            )
+                        )
+                        // Make this vertical, to the side?
+                        createSliderCallbacks.push(
+                            createSingleSlider(
+                                safeName,
+                                "Weight",
+                                "weight",
+                                selectorM,
+                                {
+                                    min: 0.1,
+                                    max: 10,
+                                    step: 0.1,
+                                    value: [0.1, 1],
+                                }
+                            )
+                        )
                         const graphDiv = document.createElement("div");
                         graphDiv.id = safeName + "_" + FUNCTION_PLOT_ID_NAME;
                         selectorM.append(graphDiv);
                         selectorM.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selectorM);
-                        drawMathPlot(safeName);
                         break;
                     default:
                         const selector = document.createElement("div");
@@ -130,12 +229,30 @@ document.getElementById("set_category").onclick =(_) => {
                             fieldset.append(label);
                         }
                         selector.append(fieldset);
-                        createNumberSlider(0.1, 10, safeName + "_weight", 1, "Weight", selector,0.1);
+
+                        createSliderCallbacks.push(
+                            createSingleSlider(
+                                safeName,
+                                "Weight",
+                                "weight",
+                                selector,
+                                {
+                                    min: 0.1,
+                                    max: 10,
+                                    step: 0.1,
+                                    value: [0.1, 1],
+                                }
+                            )
+                        )
                         selector.append(document.createElement("hr"))
                         document.getElementById("selectors").append(selector);
                         break;
                 }
             });
+            // Now that all slider divs have been mounted to the root, initialize them as range sliders.
+            createSliderCallbacks.forEach(callback => callback());
+            // Do the same for math plots once these mount
+            Object.keys(Inputs).filter(key => Inputs[key].type === 'math').forEach(drawMathPlot)
             const n = document.createElement("input");
             n.type = "number"
             n.min = 0
@@ -194,13 +311,12 @@ document.getElementById("set_category").onclick =(_) => {
 
 function drawMathPlot(name) {
     const graphDivName = '#' + name + '_' + FUNCTION_PLOT_ID_NAME;
-    const graphWeight = Number(document.getElementById(name + "_weight").value);
-    const lowerBound = Number(document.getElementById(name + "_low").min);
-    const upperBound = Number(document.getElementById(name + "_high").max);
-    const selectedLow = Number(document.getElementById(name + "_low").value);
-    const selectedHigh = Number(document.getElementById(name + "_high").value);
-    const harshness = Number(document.getElementById(name + "_harshness").value);
-    const direction = Number(document.getElementById(name + "_direction").value);
+    const graphWeight = Inputs[name]['weight'].value()[1];
+    const lowerBound = Inputs[name]['selection'].min();
+    const upperBound = Inputs[name]['selection'].max();
+    const [selectedLow, selectedHigh] = Inputs[name]['selection'].value();
+    const harshness = Inputs[name]['harshness'].value()[1];
+    const direction = Inputs[name]['direction'].value()[1];
 
     const spread = upperBound - lowerBound;
     const safeHarshness = (harshness === 0) ? 0.1 : harshness;
