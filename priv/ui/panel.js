@@ -61,7 +61,7 @@ function createDoubleSlider(name, title, type, root, options) {
     rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
 
     const titleDiv = document.createElement("div")
-    titleDiv.className = "range-slider-title";
+    titleDiv.className = "title";
     titleDiv.id = `${name}_${type}_range_slider_title`
 
     const titleElement = document.createElement("p");
@@ -113,7 +113,7 @@ function createSingleSlider(name, title, type, root, options) {
     rangeSliderWrapperDiv.id = `${name}_${type}_range_slider_wrapper`
 
     const titleDiv = document.createElement("div")
-    titleDiv.className = "range-slider-title";
+    titleDiv.className = "title";
     titleDiv.id = `${name}_${type}_range_slider_title`
 
     const titleElement = document.createElement("p");
@@ -174,11 +174,15 @@ document.getElementById("set_category").onclick =(_) => {
                     type: type
                 }
 
+                const nameHeader = document.createElement("h3")
+                nameHeader.innerText = name;
+                nameHeader.className = "title"
+
 
                 switch (type) {
                     case "math":
                         const selectorM = document.createElement("div");
-                        selectorM.append(name);
+                        selectorM.append(nameHeader);
                         createSliderCallbacks.push(
                             createDoubleSlider(
                                 safeName,
@@ -243,7 +247,7 @@ document.getElementById("set_category").onclick =(_) => {
                         break;
                     default:
                         const selector = document.createElement("div");
-                        selector.append(name)
+                        selector.append(nameHeader)
                         const fieldset = document.createElement("fieldset");
                         for (const item of meta) {
                             const input = document.createElement("input");
